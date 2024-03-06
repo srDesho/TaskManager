@@ -4,9 +4,13 @@ public class Task {
     private String txtTask;
     private boolean isCkeck;
 
-    public Task(String txtTask, boolean isCkeck) {
+    public Task() {
+        this.isCkeck = false;
+    }
+
+    public Task(String txtTask) {
+        this();
         this.txtTask = txtTask;
-        this.isCkeck = isCkeck;
     }
 
     public String getTxtTask() {
@@ -17,7 +21,7 @@ public class Task {
         this.txtTask = txtTask;
     }
 
-    public boolean isCkeck() {
+    public boolean getIsCkeck() {
         return isCkeck;
     }
 
