@@ -1,22 +1,22 @@
 package com.cristianml.gui;
 
-import com.cristianml.logic.ListTask;
 import com.cristianml.logic.Task;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Form {
     public JPanel panel;
     private JLabel lblWriteText;
     private JButton btnAdd;
-    private JTextField textField1;
+    private JTextField txtTask;
     private JTable table;
     List<Task> listTasks = new ArrayList<>();
 
@@ -56,6 +56,14 @@ public class Form {
             @Override
             public boolean isCellEditable(java.util.EventObject e) {
                 return false;
+            }
+        });
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Task task = new Task(txtTask.getText());
+                listTasks.add(task);
+                model.addRow(new Object[]{task.getTxtTask(), task.getIsCkeck()});
             }
         });
     }
