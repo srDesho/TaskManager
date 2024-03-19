@@ -5,12 +5,15 @@ import com.cristianml.logic.Task;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Form {
     public JPanel panel;
@@ -19,9 +22,11 @@ public class Form {
     private JTextField txtTask;
     private JTable table;
     List<Task> listTasks = new ArrayList<>();
+    DefaultTableModel model = null;
+    private Timer timer;
 
     public Form() {
-        DefaultTableModel model = new DefaultTableModel();
+        this.model = new DefaultTableModel();
         // Added the colums on table
         model.addColumn("Task");
         model.addColumn("Complete");
@@ -64,20 +69,53 @@ public class Form {
                 Task task = new Task(txtTask.getText());
                 listTasks.add(task);
                 model.addRow(new Object[]{task.getTxtTask(), task.getIsCkeck()});
+                refreshList(model);
+            }
+        });
+
+        // Initialize the timer
+        timer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Logic to remove the row from the table after 2 seconds
+                if (table.getSelectedRow() != -1) {
+                    listTasks.remove(table.getSelectedRow());
+                    model.removeRow(table.getSelectedRow());
+                }
+                // Stop the timer after executing the action
+                timer.stop();
+            }
+        });
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int columnaCheckbox = 1; // Índice de la columna de los checkboxes
+                int filaSeleccionada = table.rowAtPoint(e.getPoint());
+                int columnaSeleccionada = table.columnAtPoint(e.getPoint());
+
+                // Obtener los límites del checkbox
+                Rectangle checkboxBounds = table.getCellRect(filaSeleccionada, columnaCheckbox, true);
+
+                // Verificar si el evento de clic ocurrió dentro de los límites del checkbox
+                if (checkboxBounds.contains(e.getPoint())) {
+                    boolean isChecked = (boolean) model.getValueAt(filaSeleccionada, columnaCheckbox);
+                    if (isChecked) {
+                        // Iniciar el temporizador
+                        timer.restart();
+                    }
+                }
             }
         });
     }
 
 
     public void refreshList(DefaultTableModel model) {
+        model.setRowCount(0); // This serves to empty the table
+        // Add the task list to the table
         for (Task task : listTasks) {
             model.addRow(new Object[]{task.getTxtTask(), task.getIsCkeck()});
         }
     }
-
-    public void setCheckTrue(DefaultTableModel model) {
-
-    }
-
 
 }

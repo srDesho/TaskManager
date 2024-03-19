@@ -1,4 +1,4 @@
-package com.cristianml.logic;
+package com.cristianml;
 
 import com.cristianml.gui.Form;
 
